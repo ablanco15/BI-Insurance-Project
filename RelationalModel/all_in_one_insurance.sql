@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS pais,ciudad,sucursal,tipo_producto,producto,cliente,evaluacion_servicio,recomienda,contrato,registro_contrato,siniestro,registro_siniestro;
+DROP TABLE IF EXISTS pais,ciudad,sucursal,tipo_producto,producto,cliente,evaluacion_servicio,recomienda,contrato,registro_contrato,siniestro,registro_siniestro CASCADE;
 
 CREATE TABLE pais(
     cod_pais INTEGER PRIMARY KEY,
@@ -21,7 +21,7 @@ CREATE TABLE sucursal(
 
 CREATE TABLE tipo_producto(
     cod_tipo_producto INTEGER PRIMARY KEY, 
-    nb_tipo_producto VARCHAR(20) NOT NULL CHECK(nb_tipo_producto in ('PRESTACION DE SERVICIOS','PERSONALES', 'DAÑOS O PATRIMONIALES'))
+    nb_tipo_producto VARCHAR(45) NOT NULL CHECK(nb_tipo_producto in ('PRESTACION DE SERVICIOS','PERSONALES', 'DAÑOS O PATRIMONIALES'))
 );
 
 CREATE TABLE producto (
@@ -40,7 +40,7 @@ CREATE TABLE cliente(
     telefono VARCHAR(12) NOT NULL UNIQUE, 
     dirección VARCHAR(30) NOT NULL, 
     sexo VARCHAR(1) NOT NULL CHECK(sexo in ('M','F')), 
-    email VARCHAR(20) NOT NULL UNIQUE,
+    email VARCHAR(45) NOT NULL UNIQUE,
     cod_sucursal INTEGER NOT NULL,
     CONSTRAINT sucursal_fk FOREIGN KEY (cod_sucursal) REFERENCES sucursal(cod_sucursal)    
 );    
