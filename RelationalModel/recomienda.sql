@@ -1,4 +1,3 @@
-
 CREATE TABLE  recomienda (
     cod_cliente INTEGER NOT NULL, 
     cod_evaluacion_servicio INTEGER NOT NULL , 

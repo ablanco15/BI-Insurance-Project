@@ -21,7 +21,7 @@ CREATE TABLE sucursal(
 
 CREATE TABLE tipo_producto(
     cod_tipo_producto INTEGER PRIMARY KEY, 
-    nb_tipo_producto VARCHAR(45) NOT NULL CHECK(nb_tipo_producto in ('PRESTACION DE SERVICIOS','PERSONALES', 'DAÑOS O PATRIMONIALES'))
+    nb_tipo_producto VARCHAR(45) NOT NULL UNIQUE CHECK(nb_tipo_producto in ('PRESTACION DE SERVICIOS','PERSONALES', 'DAÑOS O PATRIMONIALES'))
 );
 
 CREATE TABLE producto (
@@ -68,15 +68,17 @@ CREATE TABLE contrato(
 );
 
 CREATE TABLE registro_contrato(
-    nro_contrato INTEGER PRIMARY KEY, 
+    nro_contrato INTEGER, 
     cod_producto INTEGER NOT NULL, 
     cod_cliente INTEGER NOT NULL, 
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL,
     monto INTEGER NOT NULL,
-    estado_contrato VARCHAR NOT NULL CHECK(estado_contrato IN ('activo','vencido','suspendido')),
+    estado_contrato VARCHAR NOT NULL CHECK(estado_contrato IN ('ACTIVO','VENCIDO','SUSPENDIDO')),
     CONSTRAINT producto_fk FOREIGN KEY(cod_producto) REFERENCES producto(cod_producto),
-    CONSTRAINT cliente_fk FOREIGN KEY(cod_cliente) REFERENCES cliente(cod_cliente) 
+    CONSTRAINT contrato_fk FOREIGN KEY(nro_contrato) REFERENCES contrato(nro_contrato),
+    CONSTRAINT cliente_fk FOREIGN KEY(cod_cliente) REFERENCES cliente(cod_cliente),
+    CONSTRAINT registro_contrato_pk PRIMARY KEY(nro_contrato,cod_producto,cod_cliente)
 );
 
 CREATE TABLE siniestro(
@@ -85,12 +87,14 @@ CREATE TABLE siniestro(
 );
 
 CREATE TABLE registro_siniestro(
-    nro_siniestro INTEGER PRIMARY KEY, 
+    nro_siniestro INTEGER NOT NULL, 
     nro_contrato INTEGER NOT NULL, 
     fecha_siniestro DATE NOT NULL,
     fecha_respuesta DATE NOT NULL, 
     id_rechazo VARCHAR(2) CHECK(id_rechazo in ('SI','NO')), 
     monto_reconocido INTEGER NOT NULL, 
     monto_solicitado INTEGER NOT NULL,
-    CONSTRAINT contrato_fk FOREIGN KEY(nro_contrato) REFERENCES contrato(nro_contrato)
+    CONSTRAINT contrato_fk FOREIGN KEY(nro_contrato) REFERENCES contrato(nro_contrato),
+    CONSTRAINT siniestro_fk FOREIGN KEY(nro_siniestro) REFERENCES siniestro(nro_siniestro),
+    CONSTRAINT registro_siniestro_pk PRIMARY KEY(nro_siniestro,nro_contrato) 
     );

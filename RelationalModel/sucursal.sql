@@ -1,4 +1,3 @@
-
 CREATE TABLE sucursal(
     cod_sucursal INTEGER PRIMARY KEY,
     nb_sucursal VARCHAR(30) NOT NULL,
