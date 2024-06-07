@@ -3,10 +3,17 @@ CREATE TABLE siniestro(
     descripcion_siniestro VARCHAR(50) NOT NULL
 );
 
+--------------- INSERTS for siniestro------------------
+
 
 INSERT INTO siniestro (nro_siniestro, descripcion_siniestro)
-VALUES (1, 'Robo de vehículo'),
-       (2, 'Incendio en vivienda'),
+VALUES (1, 'Robo'),
+       (2, 'Incendio'),
        (3, 'Accidente de tráfico'),
-       (4, 'Daños por agua'),
-       (5, 'Rotura de cristales');
+       (4, 'Inundación'),
+       (5, 'Daños por animales'),
+       (6, 'Terremoto'),
+       (7, 'Daños por vandalismo'),
+       (8, 'Problemas eléctricos'),
+       (9, 'Ciberataques'),
+       (10, 'Errores profesionales');

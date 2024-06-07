@@ -3,6 +3,8 @@ CREATE TABLE evaluacion_servicio(
     nb_descripcion VARCHAR(10) NOT NULL CHECK(nb_descripcion in ('MALO','REGULAR','BUENO','MUY BUENO','EXCELENTE'))
 ); 
 
+---------------------- INSERTS for evaluacion_servicio---------
+
 
 INSERT INTO evaluacion_servicio( cod_evaluacion_servicio,nb_descripcion)
 VALUES(1,'MALO'),
