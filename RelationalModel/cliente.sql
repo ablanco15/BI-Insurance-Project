@@ -3,7 +3,7 @@ CREATE TABLE cliente(
     nb_cliente VARCHAR(40) NOT NULL,
     ci_rif VARCHAR(10) UNIQUE,
     telefono VARCHAR(12) NOT NULL UNIQUE, 
-    dirección VARCHAR(30) NOT NULL, 
+    direccion VARCHAR(30) NOT NULL, 
     sexo VARCHAR(1) NOT NULL CHECK(sexo in ('M','F')), 
     email VARCHAR(45) NOT NULL UNIQUE,
     cod_sucursal INTEGER NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE cliente(
 
 ----INSERTS are in six branches/sucursales 1-> La Plata, 8-> Barra Da Tijuaca 14-> El Poblado, 19-> Cienaga, 24-> Verón, 30 -> pacífica
 
-INSERT INTO cliente (cod_cliente, nb_cliente, ci_rif, telefono, dirección, sexo, email, cod_sucursal)
+INSERT INTO cliente (cod_cliente, nb_cliente, ci_rif, telefono, direccion, sexo, email, cod_sucursal)
 VALUES (1, 'Juan Pérez', '123456789', '02125551212', 'Calle Los Claveles', 'M', 'juan.perez@email.com', 1),
        (2, 'María González', '987654321', '04141234567', 'Avenida Libertador', 'F', 'maria.gonzalez@email.com', 14),
        (3, 'Carlos López', '778899001', '02954433221', 'Calle Principal', 'M', 'carlos.lopez@email.com', 19),
@@ -47,6 +47,3 @@ VALUES (1, 'Juan Pérez', '123456789', '02125551212', 'Calle Los Claveles', 'M',
        (28, 'Nelson Delgado', '230982123', '04262309555', 'Calle San Martin', 'M', 'ndelgado@example.com', 8),
        (29, 'Maria Fuentes', '12341123', '04247843190', 'Calle La Vega', 'F', 'marfuen@example.com', 30),
        (30, 'Sofia Padron ', '534567823', '04149673091', 'Calle El Dorado', 'F', 'sofpad@example.com', 30);
-
-
-       
