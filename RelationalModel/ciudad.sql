@@ -4,6 +4,10 @@ CREATE TABLE ciudad (
     cod_pais INTEGER NOT NULL,
     CONSTRAINT pais_fk FOREIGN KEY (cod_pais) REFERENCES pais(cod_pais)
 );
+----------------ciudad/cities INSERTS-------------------------------------
+
+       (9, 'Ecuador'),-- 9. Ecuador
+       (10, 'El Salvador');-- 10. El Salvador
 
 ----------------ciudad/cities INSERTS-------------------------------------
 

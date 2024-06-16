@@ -1,4 +1,4 @@
-CREATE TABLE  recomienda (
+CREATE TABLE recomienda (
     cod_cliente INTEGER NOT NULL, 
     cod_evaluacion_servicio INTEGER NOT NULL , 
     cod_producto INTEGER NOT NULL,
@@ -9,6 +9,7 @@ CREATE TABLE  recomienda (
     CONSTRAINT pais_fk FOREIGN KEY(cod_evaluacion_servicio) REFERENCES evaluacion_servicio(cod_evaluacion_servicio),
     CONSTRAINT recomienda_pk PRIMARY KEY(cod_cliente,cod_evaluacion_servicio,cod_producto)
 );
+
 
 ---------------------------------INSERTS for recomienda---------------
 

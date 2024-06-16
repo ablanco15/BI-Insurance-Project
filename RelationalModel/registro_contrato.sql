@@ -4,23 +4,24 @@ CREATE TABLE registro_contrato(
     cod_cliente INTEGER NOT NULL, 
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL,
-    monto INTEGER NOT NULL,
-    estado_contrato VARCHAR NOT NULL CHECK(estado_contrato IN ('ACTIVO','VENCIDO','SUSPENDIDO')),
+    monto DOUBLE PRECISION NOT NULL,
+    estado_contrato VARCHAR(25) NOT NULL CHECK(estado_contrato IN ('ACTIVO','VENCIDO','SUSPENDIDO')),
     CONSTRAINT producto_fk FOREIGN KEY(cod_producto) REFERENCES producto(cod_producto),
     CONSTRAINT contrato_fk FOREIGN KEY(nro_contrato) REFERENCES contrato(nro_contrato),
     CONSTRAINT cliente_fk FOREIGN KEY(cod_cliente) REFERENCES cliente(cod_cliente),
     CONSTRAINT registro_contrato_pk PRIMARY KEY(nro_contrato,cod_producto,cod_cliente)
 );
 
+
 ----------------INSERTs for registro_contrato-----------------------------
 
 INSERT INTO registro_contrato(nro_contrato,cod_producto,cod_cliente, fecha_inicio, fecha_fin, monto,estado_contrato)
-VALUES(1,1,1,'2024-06-06','2025-06-06',5000,'ACTIVO'),
+VALUES(1,1,1,'2024-05-06','2025-05-06',5000,'ACTIVO'),
       (2,1,2,'2023-12-25','2024-12-25',5000,'VENCIDO'),
       (3,1,3,'2024-05-14','2025-05-14',4500,'ACTIVO'),
       (4,2,4,'2022-03-06','2023-03-06',2000,'VENCIDO'),
       (5,2,5,'2023-12-25','2024-12-25',2000,'VENCIDO'),
-      (6,2,6,'2024-05-14','2025-05-14',2500,'ACTIVO'),
+      (6,2,6,'2024-05-07','2025-05-07',2500,'ACTIVO'),
       (7,3,7,'2024-01-01','2025-01-01',6000,'SUSPENDIDO'),
       (8,3,8,'2020-02-01','2021-02-01',6200,'VENCIDO'),
       (9,3,9,'2021-02-18','2022-02-18',6500,'VENCIDO'),
@@ -47,4 +48,5 @@ VALUES(1,1,1,'2024-06-06','2025-06-06',5000,'ACTIVO'),
       (30,10,30,'2023-09-08','2024-09-08',3750,'ACTIVO'),
       (31,11,1,'2022-03-10','2023-03-10',4500,'VENCIDO'),
       (32,11,15,'2020-07-15','2021-07-14',5050,'VENCIDO'),
-      (33,11,30,'2024-03-03','2025-03-03',2500,'VENCIDO');
+      (33,11,30,'2024-03-03','2025-03-03',2500,'VENCIDO'),
+      (34,11,15,'2020-07-18','2021-07-18',5050,'SUSPENDIDO');

@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS pais,ciudad,sucursal,tipo_producto,producto,cliente,evaluacion_servicio,recomienda,contrato,registro_contrato,siniestro,registro_siniestro CASCADE;
+DROP TABLE IF EXISTS pais,ciudad,sucursal,tipo_producto,producto,cliente,evaluacion_servicio,recomienda,contrato,registro_contrato,siniestro,registro_siniestro,meta_producto CASCADE;
 
 CREATE TABLE pais(
     cod_pais INTEGER PRIMARY KEY,
@@ -38,7 +38,7 @@ CREATE TABLE cliente(
     nb_cliente VARCHAR(40) NOT NULL,
     ci_rif VARCHAR(10) UNIQUE,
     telefono VARCHAR(12) NOT NULL UNIQUE, 
-    dirección VARCHAR(30) NOT NULL, 
+    direccion VARCHAR(30) NOT NULL, 
     sexo VARCHAR(1) NOT NULL CHECK(sexo in ('M','F')), 
     email VARCHAR(45) NOT NULL UNIQUE,
     cod_sucursal INTEGER NOT NULL,
@@ -73,8 +73,8 @@ CREATE TABLE registro_contrato(
     cod_cliente INTEGER NOT NULL, 
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL,
-    monto INTEGER NOT NULL,
-    estado_contrato VARCHAR NOT NULL CHECK(estado_contrato IN ('ACTIVO','VENCIDO','SUSPENDIDO')),
+    monto DOUBLE PRECISION NOT NULL,
+    estado_contrato VARCHAR(25) NOT NULL CHECK(estado_contrato IN ('ACTIVO','VENCIDO','SUSPENDIDO')),
     CONSTRAINT producto_fk FOREIGN KEY(cod_producto) REFERENCES producto(cod_producto),
     CONSTRAINT contrato_fk FOREIGN KEY(nro_contrato) REFERENCES contrato(nro_contrato),
     CONSTRAINT cliente_fk FOREIGN KEY(cod_cliente) REFERENCES cliente(cod_cliente),
@@ -92,29 +92,40 @@ CREATE TABLE registro_siniestro(
     fecha_siniestro DATE NOT NULL,
     fecha_respuesta DATE NOT NULL, 
     id_rechazo VARCHAR(2) CHECK(id_rechazo in ('SI','NO')), 
-    monto_reconocido INTEGER NOT NULL, 
-    monto_solicitado INTEGER NOT NULL,
+    monto_reconocido NUMERIC NOT NULL, 
+    monto_solicitado NUMERIC NOT NULL,
     CONSTRAINT contrato_fk FOREIGN KEY(nro_contrato) REFERENCES contrato(nro_contrato),
     CONSTRAINT siniestro_fk FOREIGN KEY(nro_siniestro) REFERENCES siniestro(nro_siniestro),
     CONSTRAINT registro_siniestro_pk PRIMARY KEY(nro_siniestro,nro_contrato) 
     );
 
-    ----------------------------------------------------------INSERTS---------------------------------------------------------------------
+CREATE TABLE meta_producto(
+    cod_producto INTEGER NOT NULL,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL,
+    meta_renovacion INTEGER NOT NULL,
+    meta_asegurados INTEGER NOT NULL,
+    ingresos_estimados NUMERIC NOT NULL,
+    CONSTRAINT producto_fk FOREIGN KEY (cod_producto) REFERENCES producto(cod_producto),
+    CONSTRAINT meta_producto_pk PRIMARY KEY (cod_producto,fecha_inicio,fecha_fin) 
+);   
+
+----------------------------------------------------------INSERTS---------------------------------------------------------------------
 
     ---------- pais/countries INSERTS -----------------
 
 
-    INSERT INTO pais (cod_pais, nb_pais) 
-    VALUES (1, 'Argentina'), -- 1. Argentina
-           (2, 'Bolivia'), -- 2. Bolivia
-           (3, 'Brazil'),-- 3. Brazil
-           (4, 'Chile'),-- 4. Chile
-           (5, 'Colombia'),-- 5. Colombia
-           (6, 'Costa Rica'), -- 6. Costa Rica
-           (7, 'Cuba'), -- 7. Cuba
-           (8, 'Republica Dominicana'), -- 8. Republica Dominicana 
-           (9, 'Ecuador'),-- 9. Ecuador
-           (10, 'El Salvador');-- 10. El Salvador
+INSERT INTO pais (cod_pais, nb_pais) 
+VALUES (1, 'Argentina'), -- 1. Argentina
+       (2, 'Bolivia'), -- 2. Bolivia
+       (3, 'Brazil'),-- 3. Brazil
+       (4, 'Chile'),-- 4. Chile
+       (5, 'Colombia'),-- 5. Colombia
+       (6, 'Costa Rica'), -- 6. Costa Rica
+       (7, 'Cuba'), -- 7. Cuba
+       (8, 'Republica Dominicana'), -- 8. Republica Dominicana 
+       (9, 'Ecuador'),-- 9. Ecuador
+       (10, 'El Salvador');-- 10. El Salvador
 
 ----------------ciudad/cities INSERTS-------------------------------------
 
@@ -245,7 +256,7 @@ VALUES (1,'Vida','Brinda una indemnización a los beneficiarios en caso de falle
 
 ----INSERTS are in six branches/sucursales 1-> La Plata, 8-> Barra Da Tijuaca 14-> El Poblado, 19-> Cienaga, 24-> Verón, 30 -> pacífica
 
-INSERT INTO cliente (cod_cliente, nb_cliente, ci_rif, telefono, dirección, sexo, email, cod_sucursal)
+INSERT INTO cliente (cod_cliente, nb_cliente, ci_rif, telefono, direccion, sexo, email, cod_sucursal)
 VALUES (1, 'Juan Pérez', '123456789', '02125551212', 'Calle Los Claveles', 'M', 'juan.perez@email.com', 1),
        (2, 'María González', '987654321', '04141234567', 'Avenida Libertador', 'F', 'maria.gonzalez@email.com', 14),
        (3, 'Carlos López', '778899001', '02954433221', 'Calle Principal', 'M', 'carlos.lopez@email.com', 19),
@@ -361,18 +372,19 @@ VALUES (1, 'Contrato de seguro de vida'),
        (30, 'contrato asist. legal'),
        (31, 'contrato de seguro de decesos'),
        (32, 'contrato de seguro de decesos'),
-       (33, 'contrato de seguro de decesos');
+       (33, 'contrato de seguro de decesos'),
+       (34, 'contrato de seguro de decesos');
 
 
 ----------------INSERTs for registro_contrato-----------------------------
 
 INSERT INTO registro_contrato(nro_contrato,cod_producto,cod_cliente, fecha_inicio, fecha_fin, monto,estado_contrato)
-VALUES(1,1,1,'2024-06-06','2025-06-06',5000,'ACTIVO'),
+VALUES(1,1,1,'2024-05-06','2025-05-06',5000,'ACTIVO'),
       (2,1,2,'2023-12-25','2024-12-25',5000,'VENCIDO'),
       (3,1,3,'2024-05-14','2025-05-14',4500,'ACTIVO'),
       (4,2,4,'2022-03-06','2023-03-06',2000,'VENCIDO'),
       (5,2,5,'2023-12-25','2024-12-25',2000,'VENCIDO'),
-      (6,2,6,'2024-05-14','2025-05-14',2500,'ACTIVO'),
+      (6,2,6,'2024-05-07','2025-05-07',2500,'ACTIVO'),
       (7,3,7,'2024-01-01','2025-01-01',6000,'SUSPENDIDO'),
       (8,3,8,'2020-02-01','2021-02-01',6200,'VENCIDO'),
       (9,3,9,'2021-02-18','2022-02-18',6500,'VENCIDO'),
@@ -399,7 +411,8 @@ VALUES(1,1,1,'2024-06-06','2025-06-06',5000,'ACTIVO'),
       (30,10,30,'2023-09-08','2024-09-08',3750,'ACTIVO'),
       (31,11,1,'2022-03-10','2023-03-10',4500,'VENCIDO'),
       (32,11,15,'2020-07-15','2021-07-14',5050,'VENCIDO'),
-      (33,11,30,'2024-03-03','2025-03-03',2500,'VENCIDO');
+      (33,11,30,'2024-03-03','2025-03-03',2500,'VENCIDO'),
+      (34,11,15,'2020-07-18','2021-07-18',5050,'SUSPENDIDO');
 
 
 --------------- INSERTS for siniestro------------------
@@ -423,7 +436,7 @@ VALUES (1, 'Robo'),
 
 INSERT INTO registro_siniestro(nro_siniestro,nro_contrato,fecha_siniestro,fecha_respuesta,id_rechazo,monto_reconocido,monto_solicitado)
 VALUES(1,17,'2022-09-01','2022-09-10','SI',15000,20000),
-      (2,15,'2024-06-01','2024-05-05','SI',17000,15000),
+      (2,15,'2024-06-01','2024-06-05','SI',17000,15000),
       (3,16,'2022-01-15','2022-01-25','NO',0000,25000),
       (4,14,'2024-11-02','2024-11-15','NO',0000,10000),
       (5,7,'2024-10-10','2024-10-17','SI',8500,9000),
@@ -432,3 +445,53 @@ VALUES(1,17,'2022-09-01','2022-09-10','SI',15000,20000),
       (8,13,'2020-12-25','2021-01-15','NO',0000,10000),
       (9,29,'2021-03-17','2021-03-23','NO',0000,7200),
       (10,8,'2020-07-27','2020-08-03','SI',30000,32000);       
+
+
+      ------------------ inserts for metas_productos---------------------
+
+
+INSERT INTO meta_producto(cod_producto, fecha_inicio, fecha_fin, meta_renovacion, meta_asegurados, ingresos_estimados)
+VALUES(1, '2021-01-01','2021-12-31',10,5, 200),
+      (2, '2021-01-01','2021-12-31',12,6, 1300),
+      (3, '2021-01-01','2021-12-31',8, 4, 400),
+      (4, '2021-01-01','2021-12-31',5, 3, 300),
+      (5, '2021-01-01','2021-12-31',3, 2, 100),
+      (6, '2021-01-01','2021-12-31',2, 1, 800),
+      (7, '2021-01-01','2021-12-31',7, 4, 600),
+      (8, '2021-01-01','2021-12-31',8, 4, 2500),
+      (9, '2021-01-01','2021-12-31',13,7, 2000),
+      (10,'2021-01-01','2021-12-31',10,5, 500),
+      (11,'2021-01-01','2021-12-31',9, 5, 1000),
+      (1, '2022-01-01','2022-12-31',4 ,2, 500),
+      (2, '2022-01-01','2022-12-31',7, 4, 980),
+      (3, '2022-01-01','2022-12-31',6, 3, 1500),
+      (4, '2022-01-01','2022-12-31',3, 2, 3000),
+      (5, '2022-01-01','2022-12-31',4, 2, 300),
+      (6, '2022-01-01','2022-12-31',10,5, 150),
+      (7, '2022-01-01','2022-12-31',12,6, 280),
+      (8, '2022-01-01','2022-12-31',11,6, 100),
+      (9, '2022-01-01','2022-12-31',8 ,4, 1900),
+      (10,'2022-01-01','2022-12-31',9 ,5, 700),
+      (11,'2022-01-01','2022-12-31',10,5, 250),
+      (1, '2023-01-01','2023-12-31',9 ,5, 200),
+      (2, '2023-01-01','2023-12-31',8, 4, 1300),
+      (3, '2023-01-01','2023-12-31',4, 2, 400),
+      (4, '2023-01-01','2023-12-31',7, 4, 300),
+      (5, '2023-01-01','2023-12-31',8, 4, 100),
+      (6, '2023-01-01','2023-12-31',11,10,800),
+      (7, '2023-01-01','2023-12-31',13,7, 600),
+      (8, '2023-01-01','2023-12-31',10,5, 2500),
+      (9, '2023-01-01','2023-12-31',7 ,4, 2000),
+      (10,'2023-01-01','2023-12-31',9 ,5, 500),
+      (11,'2023-01-01','2023-12-31',11,6, 1000),
+      (1, '2024-01-01','2024-12-31',8, 4, 1200),
+      (2, '2024-01-01','2024-12-31',6, 3, 500),
+      (3, '2024-01-01','2024-12-31',4, 2, 400),
+      (4, '2024-01-01','2024-12-31',9, 5, 300),
+      (5, '2024-01-01','2024-12-31',6, 3, 250),
+      (6, '2024-01-01','2024-12-31',8, 4, 800),
+      (7, '2024-01-01','2024-12-31',7, 4, 600),
+      (8, '2024-01-01','2024-12-31',4, 2, 2500),
+      (9, '2024-01-01','2024-12-31',10,5, 1500),
+      (10,'2024-01-01','2024-12-31',5 ,3, 2500),
+      (11,'2024-01-01','2024-12-31',3, 2, 3000);

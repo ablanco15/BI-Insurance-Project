@@ -17,3 +17,4 @@ VALUES (1, 'Robo'),
        (8, 'Problemas eléctricos'),
        (9, 'Ciberataques'),
        (10, 'Errores profesionales');
+

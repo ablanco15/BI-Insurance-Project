@@ -38,4 +38,5 @@ VALUES (1, 'Contrato de seguro de vida'),
        (30, 'contrato asist. legal'),
        (31, 'contrato de seguro de decesos'),
        (32, 'contrato de seguro de decesos'),
-       (33, 'contrato de seguro de decesos');
+       (33, 'contrato de seguro de decesos'),
+       (34, 'contrato de seguro de decesos');

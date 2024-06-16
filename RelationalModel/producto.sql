@@ -7,6 +7,7 @@ CREATE TABLE producto (
     CONSTRAINT tipo_producto_fk FOREIGN KEY(cod_tipo_producto) REFERENCES tipo_producto(cod_tipo_producto) 
 );
 
+
 -------------------- producto/products INSERTS----------
 
 INSERT INTO producto(cod_producto,nb_producto,descripcion,cod_tipo_producto,calificacion)
@@ -20,4 +21,4 @@ VALUES (1,'Vida','Brinda una indemnización a los beneficiarios en caso de falle
        (8,'Responsabilidad Civil','Cubre los daños a terceros causados por el asegurado o sus bienes. ',3,4),
        (9,'Asistencia en Carretera','Brinda asistencia si hay avería, remolque del vehículo, cambio de neumáticos, entre otros.',1,5),
        (10,'Asistencia Legal','Cubre los gastos legales en caso de demandas, procesos judiciales o conflictos legales.',1,1),
-       (11,'Decesos','Cubre los gastos del funeral y otros trámites relacionados con el fallecimiento del asegurado.',1,3); 
+       (11,'Decesos','Cubre los gastos del funeral y otros trámites relacionados con el fallecimiento del asegurado.',1,3);  
