@@ -7,6 +7,7 @@ CREATE TABLE producto (
     CONSTRAINT tipo_producto_fk FOREIGN KEY(cod_tipo_producto) REFERENCES tipo_producto(cod_tipo_producto) 
 );
 
+
 -------------------- producto/products INSERTS----------
 
 INSERT INTO producto(cod_producto,nb_producto,descripcion,cod_tipo_producto,calificacion)

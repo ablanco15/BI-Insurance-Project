@@ -1,5 +1,5 @@
 CREATE TABLE dim_cliente(
-    sk_dim_cliente DOUBLE PRECISION PRIMARY KEY,
+    sk_dim_cliente INTEGER PRIMARY KEY,
     cod_cliente INTEGER NOT NULL UNIQUE,
     nb_cliente VARCHAR(25) NOT NULL,
     ci_rif VARCHAR(45) UNIQUE NOT NULL ,

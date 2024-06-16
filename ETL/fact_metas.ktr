@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>fact_evaluacion_servicio</name>
+    <name>fact_metas</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -427,10 +427,10 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2024/06/09 11:03:45.043</created_date>
+    <created_date>2024/06/15 12:54:24.394</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2024/06/09 11:03:45.043</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <modified_date>2024/06/15 12:54:24.394</modified_date>
+    <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -487,7 +487,7 @@
     </attributes>
   </connection>
   <connection>
-    <name>insurance_relational_database</name>
+    <name>insurance_relational_connection</name>
     <server>localhost</server>
     <type>POSTGRESQL</type>
     <access>Native</access>
@@ -539,49 +539,69 @@
   </connection>
   <order>
     <hop>
-      <from>recomienda_input</from>
-      <to>connect_cliente</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>dim_cliente</from>
-      <to>connect_cliente</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>connect_cliente</from>
-      <to>connect_producto</to>
+      <from>metas_producto_input</from>
+      <to>connecting_producto</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
       <from>dim_producto</from>
-      <to>connect_producto</to>
+      <to>connecting_producto</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>connect_producto</from>
-      <to>connect_evaluacion_servicio</to>
+      <from>dim_tiempo_inicio</from>
+      <to>Sorting_date_inicio</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>dim_evaluacion_servicio</from>
-      <to>connect_evaluacion_servicio</to>
+      <from>connecting_producto</from>
+      <to>Sorting_beginning_dates</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>connect_evaluacion_servicio</from>
+      <from>Sorting_beginning_dates</from>
+      <to>connecting_fecha_inicio_sk</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Sorting_date_inicio</from>
+      <to>connecting_fecha_inicio_sk</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>connecting_fecha_inicio_sk</from>
+      <to>Sorting_finish_dates</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Sorting_finish_dates</from>
+      <to>connecting_fecha_fin_sk</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>dim_tiempo_fin</from>
+      <to>Sorting_dates_fin</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Sorting_dates_fin</from>
+      <to>connecting_fecha_fin_sk</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>connecting_fecha_fin_sk</from>
       <to>Select values</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
       <from>Select values</from>
-      <to>fact_evaluacion_servicio</to>
+      <to>fact_metas</to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>fact_evaluacion_servicio</name>
-    <type>InsertUpdate</type>
+    <name>metas_producto_input</name>
+    <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -590,57 +610,162 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>insurance_dimensional_connection</connection>
-    <commit>100</commit>
-    <update_bypassed>N</update_bypassed>
-    <lookup>
-      <schema>public</schema>
-      <table>fact_evaluacion_servicio</table>
-      <key>
-        <name>sk_dim_cliente</name>
-        <field>sk_dim_cliente</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>sk_dim_producto</name>
-        <field>sk_dim_producto</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>sk_dim_evaluacion_servicio</name>
-        <field>sk_dim_evaluacion_servicio</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>recomienda_amigo</name>
-        <field>recomienda_amigo</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>sk_dim_cliente</name>
-        <rename>sk_dim_cliente</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>sk_dim_producto</name>
-        <rename>sk_dim_producto</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>sk_dim_evaluacion_servicio</name>
-        <rename>sk_dim_evaluacion_servicio</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>recomienda_amigo</name>
-        <rename>recomienda_amigo</rename>
-        <update>Y</update>
-      </value>
-    </lookup>
+    <connection>insurance_relational_connection</connection>
+    <sql>SELECT
+  cod_producto
+, fecha_inicio
+, fecha_fin
+, meta_renovacion
+, meta_asegurados
+, ingresos_estimados
+FROM "public".meta_producto
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <cached_row_meta_active>N</cached_row_meta_active>
+    <row-meta>
+      <value-meta>
+        <type>Integer</type>
+        <storagetype>normal</storagetype>
+        <name>cod_producto</name>
+        <length>9</length>
+        <precision>0</precision>
+        <origin>Table input</origin>
+        <comments>cod_producto</comments>
+        <conversion_Mask>####0;-####0</conversion_Mask>
+        <decimal_symbol>,</decimal_symbol>
+        <grouping_symbol>.</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_US</date_format_locale>
+        <date_format_timezone>America/Caracas</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>Date</type>
+        <storagetype>normal</storagetype>
+        <name>fecha_inicio</name>
+        <length>-1</length>
+        <precision>-1</precision>
+        <origin>Table input</origin>
+        <comments>fecha_inicio</comments>
+        <conversion_Mask/>
+        <decimal_symbol>,</decimal_symbol>
+        <grouping_symbol>.</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_US</date_format_locale>
+        <date_format_timezone>America/Caracas</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>Date</type>
+        <storagetype>normal</storagetype>
+        <name>fecha_fin</name>
+        <length>-1</length>
+        <precision>-1</precision>
+        <origin>Table input</origin>
+        <comments>fecha_fin</comments>
+        <conversion_Mask/>
+        <decimal_symbol>,</decimal_symbol>
+        <grouping_symbol>.</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_US</date_format_locale>
+        <date_format_timezone>America/Caracas</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>Integer</type>
+        <storagetype>normal</storagetype>
+        <name>meta_renovacion</name>
+        <length>9</length>
+        <precision>0</precision>
+        <origin>Table input</origin>
+        <comments>meta_renovacion</comments>
+        <conversion_Mask>####0;-####0</conversion_Mask>
+        <decimal_symbol>,</decimal_symbol>
+        <grouping_symbol>.</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_US</date_format_locale>
+        <date_format_timezone>America/Caracas</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>Integer</type>
+        <storagetype>normal</storagetype>
+        <name>meta_asegurados</name>
+        <length>9</length>
+        <precision>0</precision>
+        <origin>Table input</origin>
+        <comments>meta_asegurados</comments>
+        <conversion_Mask>####0;-####0</conversion_Mask>
+        <decimal_symbol>,</decimal_symbol>
+        <grouping_symbol>.</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_US</date_format_locale>
+        <date_format_timezone>America/Caracas</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>BigNumber</type>
+        <storagetype>normal</storagetype>
+        <name>ingresos_estimados</name>
+        <length>-1</length>
+        <precision>-1</precision>
+        <origin>Table input</origin>
+        <comments>ingresos_estimados</comments>
+        <conversion_Mask>######0.0###################;-######0.0###################</conversion_Mask>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_US</date_format_locale>
+        <date_format_timezone>America/Caracas</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+    </row-meta>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -650,95 +775,13 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>720</xloc>
+      <xloc>112</xloc>
       <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Select values</name>
-    <type>SelectValues</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>
-      <field>
-        <name>sk_dim_cliente</name>
-      </field>
-      <field>
-        <name>sk_dim_producto</name>
-      </field>
-      <field>
-        <name>sk_dim_evaluacion_servicio</name>
-      </field>
-      <field>
-        <name>recomienda_amigo</name>
-      </field>
-      <select_unspecified>N</select_unspecified>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>592</xloc>
-      <yloc>240</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>connect_cliente</name>
-    <type>StreamLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <from>dim_cliente</from>
-    <input_sorted>N</input_sorted>
-    <preserve_memory>Y</preserve_memory>
-    <sorted_list>N</sorted_list>
-    <integer_pair>N</integer_pair>
-    <lookup>
-      <key>
-        <name>cod_cliente</name>
-        <field>cod_cliente</field>
-      </key>
-      <value>
-        <name>sk_dim_cliente</name>
-        <rename>sk_dim_cliente</rename>
-        <default/>
-        <type>Number</type>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>192</xloc>
-      <yloc>240</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>connect_producto</name>
+    <name>connecting_producto</name>
     <type>StreamLookup</type>
     <description/>
     <distribute>Y</distribute>
@@ -774,220 +817,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>320</xloc>
+      <xloc>256</xloc>
       <yloc>240</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>connect_evaluacion_servicio</name>
-    <type>StreamLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <from>dim_evaluacion_servicio</from>
-    <input_sorted>N</input_sorted>
-    <preserve_memory>Y</preserve_memory>
-    <sorted_list>N</sorted_list>
-    <integer_pair>N</integer_pair>
-    <lookup>
-      <key>
-        <name>cod_evaluacion_servicio</name>
-        <field>cod_evaluacion_servicio</field>
-      </key>
-      <value>
-        <name>sk_dim_evaluacion_servicio</name>
-        <rename>sk_dim_evaluacion_servicio</rename>
-        <default/>
-        <type>Number</type>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>464</xloc>
-      <yloc>256</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>dim_cliente</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>insurance_dimensional_connection</connection>
-    <sql>SELECT
-  sk_dim_cliente
-, cod_cliente
-FROM "public".dim_cliente
-</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <cached_row_meta_active>N</cached_row_meta_active>
-    <row-meta>
-      <value-meta>
-        <type>Number</type>
-        <storagetype>normal</storagetype>
-        <name>sk_dim_cliente</name>
-        <length>-1</length>
-        <precision>-1</precision>
-        <origin>Table input 2</origin>
-        <comments>sk_dim_cliente</comments>
-        <conversion_Mask>####0.0#########;-####0.0#########</conversion_Mask>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>Integer</type>
-        <storagetype>normal</storagetype>
-        <name>cod_cliente</name>
-        <length>9</length>
-        <precision>0</precision>
-        <origin>Table input 2</origin>
-        <comments>cod_cliente</comments>
-        <conversion_Mask>####0;-####0</conversion_Mask>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-    </row-meta>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>192</xloc>
-      <yloc>48</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>dim_evaluacion_servicio</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>insurance_dimensional_connection</connection>
-    <sql>SELECT
-  sk_dim_evaluacion_servicio
-, cod_evaluacion_servicio
-FROM "public".dim_evaluacion_servicio
-</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <cached_row_meta_active>N</cached_row_meta_active>
-    <row-meta>
-      <value-meta>
-        <type>Number</type>
-        <storagetype>normal</storagetype>
-        <name>sk_dim_evaluacion_servicio</name>
-        <length>-1</length>
-        <precision>-1</precision>
-        <origin>Table input 4</origin>
-        <comments>sk_dim_evaluacion_servicio</comments>
-        <conversion_Mask>####0.0#########;-####0.0#########</conversion_Mask>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>Integer</type>
-        <storagetype>normal</storagetype>
-        <name>cod_evaluacion_servicio</name>
-        <length>9</length>
-        <precision>0</precision>
-        <origin>Table input 4</origin>
-        <comments>cod_evaluacion_servicio</comments>
-        <conversion_Mask>####0;-####0</conversion_Mask>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-    </row-meta>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>464</xloc>
-      <yloc>48</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1016,14 +847,14 @@ FROM "public".dim_producto
     <cached_row_meta_active>N</cached_row_meta_active>
     <row-meta>
       <value-meta>
-        <type>Number</type>
+        <type>Integer</type>
         <storagetype>normal</storagetype>
         <name>sk_dim_producto</name>
-        <length>-1</length>
-        <precision>-1</precision>
-        <origin>Table input 3</origin>
+        <length>9</length>
+        <precision>0</precision>
+        <origin>connecting_producto</origin>
         <comments>sk_dim_producto</comments>
-        <conversion_Mask>####0.0#########;-####0.0#########</conversion_Mask>
+        <conversion_Mask>####0;-####0</conversion_Mask>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol>.</grouping_symbol>
         <currency_symbol/>
@@ -1044,7 +875,7 @@ FROM "public".dim_producto
         <name>cod_producto</name>
         <length>9</length>
         <precision>0</precision>
-        <origin>Table input 3</origin>
+        <origin>connecting_producto</origin>
         <comments>cod_producto</comments>
         <conversion_Mask>####0;-####0</conversion_Mask>
         <decimal_symbol>,</decimal_symbol>
@@ -1071,13 +902,13 @@ FROM "public".dim_producto
       </output>
     </remotesteps>
     <GUI>
-      <xloc>320</xloc>
-      <yloc>48</yloc>
+      <xloc>256</xloc>
+      <yloc>32</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>recomienda_input</name>
+    <name>dim_tiempo_inicio</name>
     <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
@@ -1087,13 +918,11 @@ FROM "public".dim_producto
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>insurance_relational_database</connection>
+    <connection>insurance_dimensional_connection</connection>
     <sql>SELECT
-  cod_cliente
-, cod_evaluacion_servicio
-, cod_producto
-, recomienda_amigo
-FROM "public".recomienda
+  sk_dim_tiempo as sk_dim_fecha_inicio_meta
+, fecha_completa as fecha_inicio
+FROM "public".dim_tiempo
 </sql>
     <limit>0</limit>
     <lookup/>
@@ -1105,11 +934,11 @@ FROM "public".recomienda
       <value-meta>
         <type>Integer</type>
         <storagetype>normal</storagetype>
-        <name>cod_cliente</name>
+        <name>sk_dim_fecha_inicio_meta</name>
         <length>9</length>
         <precision>0</precision>
-        <origin>Table input</origin>
-        <comments>cod_cliente</comments>
+        <origin>dim_tiempo_inicio</origin>
+        <comments>sk_dim_fecha_inicio_meta</comments>
         <conversion_Mask>####0;-####0</conversion_Mask>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol>.</grouping_symbol>
@@ -1126,59 +955,13 @@ FROM "public".recomienda
         <lenient_string_to_number>N</lenient_string_to_number>
       </value-meta>
       <value-meta>
-        <type>Integer</type>
+        <type>Date</type>
         <storagetype>normal</storagetype>
-        <name>cod_evaluacion_servicio</name>
-        <length>9</length>
-        <precision>0</precision>
-        <origin>Table input</origin>
-        <comments>cod_evaluacion_servicio</comments>
-        <conversion_Mask>####0;-####0</conversion_Mask>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>Integer</type>
-        <storagetype>normal</storagetype>
-        <name>cod_producto</name>
-        <length>9</length>
-        <precision>0</precision>
-        <origin>Table input</origin>
-        <comments>cod_producto</comments>
-        <conversion_Mask>####0;-####0</conversion_Mask>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>Boolean</type>
-        <storagetype>normal</storagetype>
-        <name>recomienda_amigo</name>
+        <name>fecha_inicio</name>
         <length>-1</length>
         <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>recomienda_amigo</comments>
+        <origin>dim_tiempo_inicio</origin>
+        <comments>fecha_inicio</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol>.</grouping_symbol>
@@ -1204,7 +987,478 @@ FROM "public".recomienda
       </output>
     </remotesteps>
     <GUI>
-      <xloc>48</xloc>
+      <xloc>432</xloc>
+      <yloc>0</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Sorting_date_inicio</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <directory>%%java.io.tmpdir%%</directory>
+    <prefix>out</prefix>
+    <sort_size>1000000</sort_size>
+    <free_memory/>
+    <compress>N</compress>
+    <compress_variable/>
+    <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>fecha_inicio</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>432</xloc>
+      <yloc>96</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Sorting_beginning_dates</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <directory>%%java.io.tmpdir%%</directory>
+    <prefix>out</prefix>
+    <sort_size>1000000</sort_size>
+    <free_memory/>
+    <compress>N</compress>
+    <compress_variable/>
+    <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>fecha_inicio</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>336</xloc>
+      <yloc>320</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Sorting_finish_dates</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <directory>%%java.io.tmpdir%%</directory>
+    <prefix>out</prefix>
+    <sort_size>1000000</sort_size>
+    <free_memory/>
+    <compress>N</compress>
+    <compress_variable/>
+    <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>fecha_fin</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>528</xloc>
+      <yloc>320</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>connecting_fecha_inicio_sk</name>
+    <type>MergeJoin</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <join_type>INNER</join_type>
+    <step1>Sorting_beginning_dates</step1>
+    <step2>Sorting_date_inicio</step2>
+    <keys_1>
+      <key>fecha_inicio</key>
+    </keys_1>
+    <keys_2>
+      <key>fecha_inicio</key>
+    </keys_2>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>432</xloc>
+      <yloc>240</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>connecting_fecha_fin_sk</name>
+    <type>MergeJoin</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <join_type>INNER</join_type>
+    <step1>Sorting_finish_dates</step1>
+    <step2>Sorting_dates_fin</step2>
+    <keys_1>
+      <key>fecha_fin</key>
+    </keys_1>
+    <keys_2>
+      <key>fecha_fin</key>
+    </keys_2>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>656</xloc>
+      <yloc>240</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>dim_tiempo_fin</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>insurance_dimensional_connection</connection>
+    <sql>SELECT
+  sk_dim_tiempo as sk_dim_fecha_fin_meta
+, fecha_completa as fecha_fin
+FROM "public".dim_tiempo
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <cached_row_meta_active>N</cached_row_meta_active>
+    <row-meta>
+      <value-meta>
+        <type>Integer</type>
+        <storagetype>normal</storagetype>
+        <name>sk_dim_fecha_fin</name>
+        <length>9</length>
+        <precision>0</precision>
+        <origin>dim_tiempo_fin</origin>
+        <comments>sk_dim_fecha_fin</comments>
+        <conversion_Mask>####0;-####0</conversion_Mask>
+        <decimal_symbol>,</decimal_symbol>
+        <grouping_symbol>.</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_US</date_format_locale>
+        <date_format_timezone>America/Caracas</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>Date</type>
+        <storagetype>normal</storagetype>
+        <name>fecha_fin</name>
+        <length>-1</length>
+        <precision>-1</precision>
+        <origin>dim_tiempo_fin</origin>
+        <comments>fecha_fin</comments>
+        <conversion_Mask/>
+        <decimal_symbol>,</decimal_symbol>
+        <grouping_symbol>.</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_US</date_format_locale>
+        <date_format_timezone>America/Caracas</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+    </row-meta>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>656</xloc>
+      <yloc>0</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Sorting_dates_fin</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <directory>%%java.io.tmpdir%%</directory>
+    <prefix>out</prefix>
+    <sort_size>1000000</sort_size>
+    <free_memory/>
+    <compress>N</compress>
+    <compress_variable/>
+    <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>fecha_fin</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>656</xloc>
+      <yloc>96</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Select values</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>sk_dim_fecha_inicio_meta</name>
+        <rename/>
+      </field>
+      <field>
+        <name>sk_dim_fecha_fin_meta</name>
+        <rename/>
+      </field>
+      <field>
+        <name>sk_dim_producto</name>
+        <rename/>
+      </field>
+      <field>
+        <name>ingresos_estimados</name>
+        <rename>monto_meta_ingreso</rename>
+      </field>
+      <field>
+        <name>meta_renovacion</name>
+        <rename/>
+      </field>
+      <field>
+        <name>meta_asegurados</name>
+        <rename/>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>816</xloc>
+      <yloc>240</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>fact_metas</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>insurance_dimensional_connection</connection>
+    <commit>100</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema>public</schema>
+      <table>fact_metas</table>
+      <key>
+        <name>sk_dim_fecha_inicio_meta</name>
+        <field>sk_dim_fecha_inicio_meta</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>sk_dim_fecha_fin_meta</name>
+        <field>sk_dim_fecha_fin_meta</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>sk_dim_producto</name>
+        <field>sk_dim_producto</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>monto_meta_ingreso</name>
+        <field>monto_meta_ingreso</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>meta_renovacion</name>
+        <field>meta_renovacion</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>meta_asegurados</name>
+        <field>meta_asegurados</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>sk_dim_fecha_inicio_meta</name>
+        <rename>sk_dim_fecha_inicio_meta</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>sk_dim_fecha_fin_meta</name>
+        <rename>sk_dim_fecha_fin_meta</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>sk_dim_producto</name>
+        <rename>sk_dim_producto</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>monto_meta_ingreso</name>
+        <rename>monto_meta_ingreso</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>meta_renovacion</name>
+        <rename>meta_renovacion</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>meta_asegurados</name>
+        <rename>meta_asegurados</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>912</xloc>
       <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>

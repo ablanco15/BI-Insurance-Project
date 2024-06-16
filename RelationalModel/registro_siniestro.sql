@@ -11,10 +11,11 @@ CREATE TABLE registro_siniestro(
     CONSTRAINT registro_siniestro_pk PRIMARY KEY(nro_siniestro,nro_contrato) 
     );
 
+
 --------------- INSERTS for registro_siniestro------------------
 
 
-INSERT INTO registro_siniestro(nro_siniestro,nro_contrato,fecha_siniestro,fecha_respuesta,id_rechazo,monto_reconocido,monto_solicitado)
+NSERT INTO registro_siniestro(nro_siniestro,nro_contrato,fecha_siniestro,fecha_respuesta,id_rechazo,monto_reconocido,monto_solicitado)
 VALUES(1,17,'2022-09-01','2022-09-10','SI',15000,20000),
       (2,15,'2024-06-01','2024-06-05','SI',17000,15000),
       (3,16,'2022-01-15','2022-01-25','NO',0000,25000),
